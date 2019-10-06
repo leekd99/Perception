@@ -8,14 +8,43 @@ import numpy as np
 def compute_accuracy(test_y, pred_y):
 
     # TO-DO: add your code here
+    result = test_y - pred_y
 
-    return None
+    return result
 
 def test_knn(train_x, train_y, test_x, num_nn):
 
     # TO-DO: add your code here
+    pred_y = []
+    norm2arr = []
+    val = 0
 
-    return None
+    #print(train_x.shape)
+
+    #iterate through each row in the test array
+    for row in test_x:
+        #first subtract the test row from every row in train row.
+        #then square each element in the new array
+        #then sum everything along the rows to get norm2 squared
+        arr = np.sum(np.square(train_x - row), axis=1)
+        min = np.argmin(arr)
+        #print('in for loop')
+        val += 1
+        norm2arr.append(list(arr))
+        #norm2arr.append(arr)
+        #print(min)
+        #print(arr[min])
+        #arr[min] = 100000
+        #print(arr[min])
+        #print(np.argmin(arr))
+        #print(arr[np.argmin(arr)])
+        print(val)
+        #if val == 100:
+        #    break
+
+    nicearr = np.array(norm2arr)
+    
+    return nicearr
 
 def test_pocket(w, test_x):
 
@@ -63,13 +92,45 @@ def main():
     testY = dataY[nNumTrainingExamples:]
 
     # TO-DO: add your code here
-    num_train = 100       #Number of training examples
+    num_train = 100      #Number of training examples
     num_test = 50        #Number of testing examples
     num_dims = 16        #The dimensionality of the examples 16 total
 
-    test = dataX[nNumTrainingExamples]
+    
+    #test_knn(train_x, train_y, test_x, num_nn)
+    
+    #print(testX[0])
+    #print(trainX[0])
+    #print(testX[0])
+    print( test_knn(trainX, trainY, testX, 1) )       
+    #print(trainX[14999])
+    #print(testX)
 
-    print(test)
+    #print(testX)
+    #print('+=================')
+    #print(testX - testX[0])
+
+    #arr = testX.transpose()
+
+    #print(arr)
+
+    # print(testX)
+
+    # print('+++++++++++++++++++=')
+
+    # val = 0
+
+    # for row in testX:
+        
+    #     print(row)
+    #     val += 1
+    #     if val == 6:
+    #         break
+
+
+    #print(type(len(trainX[1, :])))
+
+    #print( (testX[0][3] - testX[0][0]) ** 2 )
 
     """
     For k-nn 
