@@ -1,6 +1,8 @@
 # Note: this is just a template for PA 1 and the code is for references only.
 # Feel free to design the pipeline of the *main* function. However, one should keep
 # the interfaces for the other functions unchanged.
+# Author: Kyle D. Lee
+# Date: 10-06-19
 
 import csv
 import numpy as np
@@ -419,103 +421,6 @@ def main():
     print( "test Start",  )
     run_knn(dataX, dataY, nNumTrainingExamples)
     runPerceptron(dataX, dataY, numIteration, nNumTrainingExamples)
-    
-    
-
-    #prcTrainY = convertForPerceptron(letterVal, trainY)
-    #prcTestY = convertForPerceptron(letterVal, testY)
-
-    ##print("^^^^^^^^^^^^^^^^^^^^^^^")
-    #testPerY = convertFortest(letterVal, testY)
-    #trainPerY = convertFortest(letterVal, trainY)
-    #print(np.sum(testPerY)/len(testPerY))
-
-    #w.append( train_pocket(trainX, prcTestY, 4) )
-    #v = train_pocket(trainX[:1000], prcTrainY, 20)
-    #print('weight')
-    #print(v)
-    
-    #y = test_pocket(v, testX)
-
-    #print('number of yes')
-    #print(np.sum(testPerY))
-
-    #print('other yes in train')
-    #print(np.sum(trainPerY))
-    #print((y))
-
-    #print('value')
-    #print(testY[np.argmin(testY)])
-
-    #w = np.array(w)
-    #print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-    #print(prcTestY)
-
-    #acc = compute_accuracy(prcTestY,y)
-    #print('accurarcy')
-    #print(acc)
-
-    #print(testY)
-
-    #fileKnn.close()
-
-    #test_knn(train_x, train_y, test_x, num_nn)
-    
-    #print(testX[0])
-    #print(trainX[0])
-    #print(testX[0])
-    
-    #print(type(pred_y[0]))
-    
-    #print( test_knn(trainX, trainY, testX, 5) )       
-    
-    #print(trainX[14999])
-    #print(testX)
-    #print(type(testY[0]))
-    #print(testX)
-    #print('+=================')
-    #print(testX - testX[0])
-
-    #arr = testX.transpose()
-
-    #print(arr)
-
-    # print(testX)
-
-    # print('+++++++++++++++++++=')
-
-    # val = 0
-
-    # for row in testX:
-        
-    #     print(row)
-    #     val += 1
-    #     if val == 6:
-    #         break
-
-
-    #print(type(len(trainX[1, :])))
-
-    #print( (testX[0][3] - testX[0][0]) ** 2 )
-
-    """
-    For k-nn 
-        where train_x is a (num_train, num_dims) data matrix, test_x is a (num_test, num_dims) data matrix, 
-        train_y is a (num_train,) label vector, and pred_y is a (num_test,) label vector, 
-        and num_nn is the number of nearest neighbors for classification.
-    
-    For train_Pocket
-        where train_x is a (num_train, num_dims) data matrix, train_y is a (num_train,) +1/-1 label vector, 
-        num_iters is the number of iterations for the algorithm, w is a vector of learned perceptron weights.
-
-    For test_Pockets
-        where w is a vector of learned perceptron weights, test_x is a (num_test, num_dims) data matrix, 
-        and pred_y is a (num_test,) +1/-1 label vector.
-
-    For acc
-        where test_y is a (num_test,) label vector, and pred_y is a (num_test,) 
-        label vector, and acc is a float between 0.0 and 1.0, representing the classification accuracy.
-    """
 
     return None
 
