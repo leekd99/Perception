@@ -12,52 +12,43 @@ def compute_accuracy(test_y, pred_y):
 
     # TO-DO: add your code here
     #Computing accuracy for k-nn
-    if  test_y[np.argmin(test_y)]  != -1:
+    
 
-        diff = pred_y - test_y
-        result = []
-        for i in diff:
-            if i != 0:
-                result.append(1)
-            else:
-                result.append(i)
+    diff = pred_y - test_y
+    result = []
+    for i in diff:
+        if i != 0:
+            result.append(1)
+        else:
+            result.append(0)
             
-        accuracy = (diff.size - np.sum(result))/diff.size
-
-    else:
-        true_positive = 0
-        true_negative = 0
-        false_positive = 0
-        false_negative = 0
-        index = 0
-        while index < len(test_y)-1:
-            index += 1
-            if (test_y[index] == 1 and pred_y[index] == 1):
-                true_positive += 1
-            elif (test_y[index] == 1 and pred_y[index] == -1):
-                false_positive += 1
-            elif (test_y[index] == -1 and pred_y[index] == 1):
-                false_negative += 1
-            elif (test_y[index] == -1 and pred_y[index] == -1):
-                true_negative += 1
+    accuracy = (diff.size - np.sum(result))/diff.size
         
-        if len(test_y) == 10000:
-            
-            fileConfsMat = open("ConfusionMat.txt", "a")
-            fileConfsMat.write("Confusion Matrix for Perceptron with size 10000 is as follows:")
-            fileConfsMat.write("\nTrue Positive: ")
-            fileConfsMat.write(str(true_positive))
-            fileConfsMat.write("\nFalse Positive: ")
-            fileConfsMat.write(str(false_positive))
-            fileConfsMat.write("\nTrue Negative: ")
-            fileConfsMat.write(str(true_negative))
-            fileConfsMat.write("\nFalse Negative: ")
-            fileConfsMat.write(str(false_negative))
-            fileConfsMat.write("\n")
-            fileConfsMat.close()
+    confusionMatrix = np.zeros(shape=(26,26))
+        
+    index = 0
+    while index < len(pred_y):
+        confusionMatrix[test_y[index]][pred_y[index]] += 1
+        index += 1
 
+    f_confusion_mat = open("confusionMatrix.txt", "a+")
+    f_confusion_mat.write('\nConfusion Matrix for Data Set size 15000\n\n')
 
-        accuracy = (true_positive + true_negative)/len(test_y)
+    value = 0
+    while value < 26:
+        f_confusion_mat.write('\t%s'%str(value))
+        value += 1
+    f_confusion_mat.write('\n')
+
+    count = 0
+    label = 0
+    for element in np.nditer(confusionMatrix):
+        if (count % 26 == 0):
+            f_confusion_mat.write("\n%s\t"%str(label))
+            label += 1
+        f_confusion_mat.write(str(element))
+        f_confusion_mat.write('\t')
+        count += 1
 
     return accuracy
 
@@ -70,7 +61,6 @@ def countTotalPos(labelY):
             numPos += 1
 
     return numPos
-# TP + TN / TP + TN +FP + FN
 
 def test_knn(train_x, train_y, test_x, num_nn):
 
@@ -143,9 +133,11 @@ def test_pocket(w, test_x):
 
     y_pred = []
     # TO-DO: add your code here
-    for row in test_x:        
-
-        y_pred.append(prediction(row, w))
+    for row in test_x:
+        
+        v = w[:,1:]
+        temp_y = np.matmul(v,(row)) + w[:,0] 
+        y_pred.append(np.argmax(temp_y))
 
     return y_pred
 
@@ -285,14 +277,13 @@ def runPerceptron(data_X, data_Y, num_iters, numTrainExams):
 
         tempTrainX = data_X[:setSize, :]
         tempTrainY = data_Y[:setSize]
-        tempTestX = data_X[20000-setSize:, :]
-        tempTestY = data_Y[20000-setSize:]
-        
+        tempTestX = data_X[numTrainExams:, :]
+        tempTestY = data_Y[numTrainExams:]
+
         #Calculate the weight vector for each letter
         while currentLabel < lastLetter:
             print('Starting test for set %s label %s'%(str(setSize), str(currentLabel)) )
             perc_train_y = convertForPerceptron(currentLabel, tempTrainY)
-            perc_test_y = convertForPerceptron(currentLabel, tempTestY)
           
             v = train_pocket(tempTrainX, perc_train_y, numIteration)
             w.append(v)
@@ -301,36 +292,31 @@ def runPerceptron(data_X, data_Y, num_iters, numTrainExams):
             print(currentLabel)
 
         #initialize label to be the first letter which is 0
-        currentLabel2 = 0
-        while currentLabel2 < lastLetter:
-            #return predicted values for each label
-            perc_test_y = convertForPerceptron(currentLabel, tempTestY)
 
-            y = test_pocket(w[currentLabel2], tempTestX)
-            acc = compute_accuracy(perc_test_y,y)
+        w = np.array(w)
+
+        y = test_pocket(w, tempTestX)
+        acc = compute_accuracy(tempTestY,y)
       
-            filePerc.write('For set size: ')
-            filePerc.write(str(setSize))
-            filePerc.write(' For label: ')
-            filePerc.write(str(currentLabel2))
-            #filePerc.write(' \nWeightvector: ')
-            #filePerc.write(str(w[currentLabel2]))
-            filePerc.write('\naccuracy: ')
-            filePerc.write(str(acc))
-            filePerc.write('\n')
-
-            currentLabel2 += 1
+        filePerc.write('For set size: ')
+        filePerc.write(str(setSize))
+        #filePerc.write(' \nWeightvector: ')
+        #filePerc.write(str(w[currentLabel2]))
+        filePerc.write('\naccuracy: ')
+        filePerc.write(str(acc))
         filePerc.write('\n')
+
+        
+    filePerc.write('\n')
         
 
     #Set size of train and test set based on numbers above
     
     perc_train_y = convertForPerceptron(currentLabel, trainY)
-    perc_test_y = convertForPerceptron(currentLabel, testY)
 
     #initialize label to be the first letter which is 0
     currentLabel = 0
-
+    w = []
     #Calculate the weight vector for each letter
     while currentLabel < lastLetter:
         print('making progress training %s'%(str(currentLabel)))
@@ -339,23 +325,21 @@ def runPerceptron(data_X, data_Y, num_iters, numTrainExams):
 
         currentLabel += 1
     #initialize label to be the first letter which is 0
-    currentLabel = 0
-    while currentLabel < lastLetter:
-        print('making progress testing writing now %s'%(str(currentLabel)))
-        #return predicted values for each label
-        y = test_pocket(w[currentLabel], testX)
-        acc = compute_accuracy(perc_test_y,y)
 
-        filePerc.write('For set size: ')
-        filePerc.write(str(numTrainExams))
-        filePerc.write(' For label: ')
-        filePerc.write(str(currentLabel))
-        #filePerc.write(' Weightvector: ')
-        #filePerc.write(str(w[currentLabel]))
-        filePerc.write('\naccuracy: ')
-        filePerc.write(str(acc))
-        filePerc.write('\n')
-        currentLabel += 1
+    w = np.array(w)
+    print('making progress testing writing now %s'%(str(currentLabel)))
+    #return predicted values for each label
+    y = test_pocket(w, testX)
+    acc = compute_accuracy(testY,y)
+
+    filePerc.write('For set size: ')
+    filePerc.write(str(numTrainExams))
+    #filePerc.write(' Weightvector: ')
+    #filePerc.write(str(w[currentLabel]))
+    filePerc.write('\naccuracy: ')
+    filePerc.write(str(acc))
+    filePerc.write('\n')
+    currentLabel += 1
 
     filePerc.close()
     return None
@@ -416,10 +400,10 @@ def main():
     testX = dataX[nNumTrainingExamples:, :]
     testY = dataY[nNumTrainingExamples:]
 
-    numIteration = 100
+    numIteration = 10000
     
     print( "test Start",  )
-    run_knn(dataX, dataY, nNumTrainingExamples)
+    #run_knn(dataX, dataY, nNumTrainingExamples)
     runPerceptron(dataX, dataY, numIteration, nNumTrainingExamples)
 
     return None
